@@ -9,7 +9,7 @@ void master::Run(){
     // Ground Sensor Measurements under this threshold are black
     // measurements above this threshold can be considered white.
     // TODO: Fill this in with a reasonable threshold that separates "line detected" from "no line detected"
-    GROUND_SENSOR_THRESHOLD = 0
+    double GROUND_SENSOR_THRESHOLD = 0.0;
 
     // These are your pose values that you will update by solving the odometry equations
     double pose_x = 0;
@@ -17,17 +17,14 @@ void master::Run(){
     double pose_theta = 0;
 
     // Index into ground_sensors and ground_sensor_readings for each of the 3 onboard sensors.
-    int LEFT_IDX = 2
-    int CENTER_IDX = 1
-    int RIGHT_IDX = 0
+    int LEFT_IDX = 2;
+    int CENTER_IDX = 1;
+    int RIGHT_IDX = 0;
 
     // ePuck Constants
     double EPUCK_AXLE_DIAMETER = 0.053; // ePuck's wheels are 53mm apart.
     double EPUCK_MAX_WHEEL_SPEED = 0; // TODO: To be filled in with ePuck wheel speed in m/s
     double MAX_SPEED = 6.28;
-
-    // get the time step of the current world.
-    double SIM_TIMESTEP = int(robot.getBasicTimeStep())
 
     // Initialize Motors
     robot->SetLeftMotorSpeed(0.0);
@@ -47,7 +44,7 @@ void master::Run(){
     // Main Control Loop:
     while (robot->StepSim() != -1) {
         // Read ground sensor values
-        getGroundSensors(gsens);
+        robot->getGroundSensors(gsens);
 
         //TODO: Uncomment to see the ground sensor values!
         //for(int ii=0;ii<gsens.size();ii++){
@@ -103,7 +100,6 @@ void master::Run(){
         // 2) Use the pose when you encounter the line last 
         // for best results
         
-            printf("Current pose: [%5f, %5f, %5f]" % (pose_x, pose_y, pose_theta))
         cout << "Current Pose: [" << pose_x << ", " << pose_y << ", " << pose_theta << "]" << endl;
         robot->SetLeftMotorSpeed(vL);
         robot->SetRightMotorSpeed(vR);

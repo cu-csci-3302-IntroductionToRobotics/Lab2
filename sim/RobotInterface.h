@@ -77,7 +77,7 @@ private:
   shared_ptr<Motor> right_wheel;
   Node* robot_node;
   vector<DistanceSensor*> distsen;
-  vector<GroundSensor*> groundsen;
+  vector<DistanceSensor*> groundsen;
 };
 
 #endif // ROBOTINTERFACE_H__
