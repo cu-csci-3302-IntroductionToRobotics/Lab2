@@ -1,6 +1,6 @@
-# Lab1
+# Lab2
 
-State machine based Reactive Behavior
+Perception
 
 ## How to build your project
  

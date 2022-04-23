@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/run_lab.dir/apps/main.cpp.o CMakeFiles/run_lab.dir/code/master.cpp.o -o run_lab   -L/usr/local/webots/lib/controller  -Wl,-rpath,/usr/local/webots/lib/controller -lCppController /usr/local/webots/lib/controller/libController.so 
