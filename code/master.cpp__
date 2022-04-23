@@ -1,0 +1,88 @@
+#include "master.h"
+
+master::master(){
+    // attach to robot interface
+    robot.reset(new RobotInterface);
+}
+
+void master::Run(){
+    // replace the code in this function with your own code
+    // here is a dummy example of driving the robot forward
+
+
+    double max_speed = 6.28;
+    double left_speed = max_speed; // [rad/s]
+    double right_speed = max_speed; // [rad/s]
+
+    enum state{forward1,turn180,forward2,align,wfollow,stop};
+    state curr_state = state::forward1;
+    vector<double> dist;
+    double threshold = 80.0;
+    int state_duration = 134;
+
+    // continue simulating until StepSim() returns -1 (the simulator stop condition)
+    while (robot->StepSim() != -1) {
+
+        // Read proximity sensor values
+        robot->getProximitySensors(dist);
+
+        // Process behavior
+        bool right_obstacle = false;
+        bool left_obstacle = false;
+        if(dist[0]>threshold || dist[1]>threshold || dist[2]>threshold)
+            right_obstacle = true;
+        if(dist[5]>threshold || dist[6]>threshold || dist[7]>threshold)
+            left_obstacle = true;
+
+        switch (curr_state)
+        {
+        case state::forward1:
+            left_speed = max_speed;
+            right_speed = max_speed;
+            if(dist[0]>threshold || dist[7]>threshold)
+                curr_state = state::turn180;
+            break;
+        case state::turn180:
+            left_speed = max_speed;
+            right_speed = -max_speed;
+            state_duration -= 1;
+            if(state_duration<=0)
+                curr_state = state::forward2;
+            break;
+        case state::forward2:
+            if(right_obstacle || left_obstacle){
+                curr_state = state::align;
+                left_speed = 0;
+                right_speed = 0;
+            } else {
+                left_speed = max_speed;
+                right_speed = max_speed;
+            }
+            break;
+        case state::align:
+            if(dist[5] < threshold*1.2){
+                left_speed = max_speed;
+                right_speed = -max_speed;
+            } else {
+                curr_state = state::wfollow;
+            }
+            break;
+        case state::wfollow:
+            left_speed = max_speed;
+            right_speed = max_speed;
+            if(dist[5]<threshold)
+                curr_state = state::stop;
+            break;
+        case state::stop:
+            left_speed = 0;
+            right_speed = 0;
+            break;
+        default:
+            cout << "Illegal State, we should not be here" << endl;
+            break;
+        }
+        robot->SetLeftMotorSpeed(left_speed);
+        robot->SetRightMotorSpeed(right_speed);
+    }
+}    
+
